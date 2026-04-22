@@ -1,8 +1,9 @@
 \documentclass{article}
-\usepackage{graphicx} % Required for inserting images
+\usepackage{graphicx} 
+\usepackage{amsmath}
 
 \title{The Role of Behavioral Interaction Features in AI-Driven Learning Systems}
-\author{Iulia Georgiana Buhai}
+\author{Buhai}
 \date{April 2026}
 
 \begin{document}
@@ -11,32 +12,48 @@
 
 
 \section{Acknowledgement}
-This work was supported by a KING CAROL I-st research fellowship granted by the National Research Authority, contract number 30382/09.02.2026.
+
+    This work was supported by a KING CAROL I-st research fellowship granted by the National Research Authority, contract number 30382/09.02.2026.
 \section{Introduction}
 200 words
 \section{Dataset and Research Design}
-~ 200 words
-what data 
-why the chosen data
-how was the data used
-The dataset represent a synthetic dataset that covers the ai usage among students when studying. Tha dataset contains 11 fields with data about study sessions of students. Before any analysis the data was cleaned(unnecesary fields were removed, non-numerical fields were computed and given numerical data) and extra features were extracted (Engagement, Persistence, Efficiency and Friction tolerance), with the following formulas :
 
-    $$\text{Engagement} = Z(\text{TotalPrompts}) + Z(\text{SessionLengthMin})$$ [kaggle]
+~~The dataset represents a synthetic dataset that covers AI usage among students during study sessions. The dataset contains 11 fields with data about the students' study sessions. Before any analysis was done, the data was cleaned(unnecessary fields were removed, non-numerical fields were replaced with numerical representations) and extra features were computed based on the given features (Engagement, Persistence, Efficiency and Friction tolerance), each feature rewarding or penalizing the behavior propotionally with the feature (see more in section 4).
 
-    $$\text{Persistence} = Z(\text{TotalPrompts}) - (0.3 \times Z(\text{AI\_AssistanceLevel}))$$ [kaggle]
-
-    $$\text{Efficiency} = \frac{MinMax(\text{FinalOutcome}) \times MinMax(\text{SatisfactionRating})}{\text{Engagement}_{\text{shifted}} + \epsilon}$$ [kaggle]
-
-    $$\text{FrictionTolerance} = \text{Prompts} - \text{AI}$$ [kaggle]
-
-    
 
 \section{Building Behavioral Metrics}
-350 words
-Engagement
-Persistance
-Efficiency
-Friction Tolerance
+
+~To ensure mathematical stability and prevent dimensional scaling bias, raw interaction metrics are first standardized using Z-score normalization (transforms a variable so that it is expressed relative to its distribution—specifically, how far a value is from the mean in units of standard deviation.). Outcomes are normalized to a strictly positive 0-1 scale using Min-Max scaling.
+
+1. Engagement (Interaction Intensity)
+Engagement captures the total volume of interaction, balancing both time spent and prompt frequency without introducing denominator instability. The engagement feature is rewarding each prompt and each minute spent studying.
+
+    \[
+    \text{Engagement} = Z(\text{TotalPrompts}) + Z(\text{SessionLengthMin})
+    \]
+
+2. Persistence (Effort and Continuity with Outcome data)
+Persistence measures sustained effort by gently penalizing over-reliance on high AI assistance (which requires less independent cognitive effort). The persistance feature reward the work but also makes sure the student put in cognitive effort.
+
+    \[
+    \text{Persistence} = Z(\text{TotalPrompts}) - (0.3 \times Z(\text{AI\_AssistanceLevel}))
+    \]
+
+3. Efficiency (Outcome Relative to Effort)
+Efficiency calculates the successful output per unit of engagement. Both Final Outcome and Satisfaction are min-max scaled to [0, 1] to prevent negative-value multiplication traps. Engagement is shifted to be strictly positive ($\epsilon = 0.01$) to prevent zero-division.
+
+    \[
+    \text{Efficiency} = \frac{MinMax(\text{FinalOutcome}) \times MinMax(\text{SatisfactionRating})}{\text{Engagement}_{\text{shifted}} + \epsilon}
+    \]
+
+4. Friction Tolerance (pure effort)**
+Friction Tolerance captures the degree of independent cognitive effort by penalizing reliance on AI assistance. Higher values indicate users who engage actively while maintaining lower dependence on automated support.
+
+
+    \[
+     \text{FrictionTolerance} = \text{Prompts} - \text{AI} 
+    \]
+
 \section{Main Findings: What the Data Showed}
 400 words
 Engagement
