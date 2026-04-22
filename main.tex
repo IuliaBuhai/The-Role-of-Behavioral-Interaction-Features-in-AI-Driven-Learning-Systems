@@ -9,14 +9,28 @@
 
 \maketitle
 
+
 \section{Acknowledgement}
+This work was supported by a KING CAROL I-st research fellowship granted by the National Research Authority, contract number 30382/09.02.2026.
 \section{Introduction}
 200 words
 \section{Dataset and Research Design}
-200 words
+~ 200 words
 what data 
 why the chosen data
 how was the data used
+The dataset represent a synthetic dataset that covers the ai usage among students when studying. Tha dataset contains 11 fields with data about study sessions of students. Before any analysis the data was cleaned(unnecesary fields were removed, non-numerical fields were computed and given numerical data) and extra features were extracted (Engagement, Persistence, Efficiency and Friction tolerance), with the following formulas :
+
+    $$\text{Engagement} = Z(\text{TotalPrompts}) + Z(\text{SessionLengthMin})$$ [kaggle]
+
+    $$\text{Persistence} = Z(\text{TotalPrompts}) - (0.3 \times Z(\text{AI\_AssistanceLevel}))$$ [kaggle]
+
+    $$\text{Efficiency} = \frac{MinMax(\text{FinalOutcome}) \times MinMax(\text{SatisfactionRating})}{\text{Engagement}_{\text{shifted}} + \epsilon}$$ [kaggle]
+
+    $$\text{FrictionTolerance} = \text{Prompts} - \text{AI}$$ [kaggle]
+
+    
+
 \section{Building Behavioral Metrics}
 350 words
 Engagement
