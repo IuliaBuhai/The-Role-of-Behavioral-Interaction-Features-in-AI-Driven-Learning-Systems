@@ -3,7 +3,7 @@
 \usepackage{amsmath}
 
 \title{The Role of Behavioral Interaction Features in AI-Driven Learning Systems}
-\author{Buhai}
+\author{Iulia Georgiana Buhai}
 \date{April 2026}
 
 \begin{document}
@@ -15,53 +15,70 @@
 
     This work was supported by a KING CAROL I-st research fellowship granted by the National Research Authority, contract number 30382/09.02.2026.
 \section{Introduction}
-200 words
+~Artificial intelligence is increasingly integrated into educational environments, fundamentally reshaping how students interact with learning resources. Modern AI-driven systems provide on-demand assistance, adaptive feedback, and personalized guidance, but their effectiveness depends not only on the availability of these tools, but on how learners engage with them. Understanding behavioral interaction patterns is therefore essential for evaluating both learning outcomes and long-term system adoption.
+
+~Prior research has focused on performance metrics or user satisfaction, less attention being given to the behavioral features that appear during interaction, such as engagement intensity, persistence, and efficiency. The behavioral signals can offer deeper insight into how students balance effort, reliance on AI assistance, and perceived outcomes during study sessions.
+
+~This study investigates the role of behavioral metrics in predicting user satisfaction and continued usage of AI-assisted learning systems. Using a structured dataset of simulated study sessions,  normalized indicators are constructed in such a way that they capture engagement, persistence, efficiency, and friction tolerance, which are later analyzed so their impact on retention and satisfaction can be approximated.
+
+~The results highlight efficiency as the dominant predictor of continued usage, suggesting that users prioritize outcome quality relative to effort over raw interaction volume. These findings contribute to the design of more effective and user-centered AI learning systems.
+
 \section{Dataset and Research Design}
 
-~~The dataset represents a synthetic dataset that covers AI usage among students during study sessions. The dataset contains 11 fields with data about the students' study sessions. Before any analysis was done, the data was cleaned(unnecessary fields were removed, non-numerical fields were replaced with numerical representations) and extra features were computed based on the given features (Engagement, Persistence, Efficiency and Friction tolerance), each feature rewarding or penalizing the behavior propotionally with the feature (see more in section 4).
+~The dataset represents a synthetic dataset that covers AI usage among students during study sessions. The dataset contains 11 fields with data about the students' study sessions. Before any analysis was done, the data was cleaned(unnecessary fields were removed, non-numerical fields were replaced with numerical representations) and extra features were computed based on the given features (Engagement, Persistence, Efficiency and Friction tolerance), each feature rewarding or penalizing the behavior propotionally with the feature (see more in section 4).
 
 
 \section{Building Behavioral Metrics}
 
-~To ensure mathematical stability and prevent dimensional scaling bias, raw interaction metrics are first standardized using Z-score normalization (transforms a variable so that it is expressed relative to its distribution—specifically, how far a value is from the mean in units of standard deviation.). Outcomes are normalized to a strictly positive 0-1 scale using Min-Max scaling.
+~The behavioral dimensions considered in this study are conceptually grounded in prior work on the ThinkR platform, where interaction-based features were shown to reflect cognitive and motivational aspects of learning behavior.
+~Raw interaction variables are first standardized using Z-score normalization to remove scale effects and center distributions. Subsequently, selected outcome variables are transformed using Min-Max scaling to ensure strictly positive values required for ratio-based computations.
 
 1. Engagement (Interaction Intensity)
-Engagement captures the total volume of interaction, balancing both time spent and prompt frequency without introducing denominator instability. The engagement feature is rewarding each prompt and each minute spent studying.
+
+~Engagement captures the total volume of interaction, balancing both time spent and prompt frequency, . The engagement feature is rewarding each prompt and each minute spent studying. The formula of engagement is the following:
 
     \[
     \text{Engagement} = Z(\text{TotalPrompts}) + Z(\text{SessionLengthMin})
     \]
 
-2. Persistence (Effort and Continuity with Outcome data)
-Persistence measures sustained effort by gently penalizing over-reliance on high AI assistance (which requires less independent cognitive effort). The persistance feature reward the work but also makes sure the student put in cognitive effort.
+2. Persistence (Cognitive Effort)
+
+~Persistence measures sustained effort, it gently penalizes over-reliance on AI assistance (which requires less independent cognitive effort). The persistence feature rewards the effort, the work, but also makes sure the student put in cognitive effort.The weighting factor (0.3) controls the influence of AI assistance, ensuring that assistance moderates but does not dominate the persistence signal. This reflects the assumption that moderate AI use supports learning, while excessive reliance reduces independent cognitive effort.The formula of persistence is the following:
 
     \[
     \text{Persistence} = Z(\text{TotalPrompts}) - (0.3 \times Z(\text{AI\_AssistanceLevel}))
     \]
 
 3. Efficiency (Outcome Relative to Effort)
-Efficiency calculates the successful output per unit of engagement. Both Final Outcome and Satisfaction are min-max scaled to [0, 1] to prevent negative-value multiplication traps. Engagement is shifted to be strictly positive ($\epsilon = 0.01$) to prevent zero-division.
+
+~Efficiency computes the successful output realative to engagement, it is modeled as outcome quality relative to interaction cost. Both features that contribute to efficiency (the final outcome and the satisfaction rating) are optimised and normalised so they ensure objective performance and subjective perception.The formula of efficiency is the following:
 
     \[
     \text{Efficiency} = \frac{MinMax(\text{FinalOutcome}) \times MinMax(\text{SatisfactionRating})}{\text{Engagement}_{\text{shifted}} + \epsilon}
     \]
 
-4. Friction Tolerance (pure effort)**
-Friction Tolerance captures the degree of independent cognitive effort by penalizing reliance on AI assistance. Higher values indicate users who engage actively while maintaining lower dependence on automated support.
+4. Friction Tolerance (pure effort)
 
+~The Friction Tolerance metric captures cognitive effort, by penalizing reliance on AI assistance. Higher values indicate users who engage actively while maintaining lower dependence on automated support.While less expressive than composite features, it serves as a baseline indicator of autonomy in interaction behavior.The formula of friction tolerance is the following:
 
     \[
      \text{FrictionTolerance} = \text{Prompts} - \text{AI} 
     \]
 
+Together, these metrics form a structured behavioral representation of user interaction, balancing effort, outcome, and assistance. This feature space enables the subsequent analysis of their relative importance in predicting satisfaction and continued usage.
 \section{Main Findings: What the Data Showed}
-400 words
-Engagement
-Persistance
-Strongest success predictor
-summary
-\section{Behavioral Patterns and Clustering}
-why 
+
+After data analysis and 
+Efficiency is paramount: Contributing nearly 40\% of the model’s decision weight, how efficiently a user interacts with the system is by far the strongest indicator of whether they will return.
+
+Engagement and Satisfaction are strong secondary signals: Engagement (22\%) and Satisfaction Rating (18\%) showed substantial influence, serving as critical behavioral and qualitative predictors of user retention.
+Effort alone is insufficient: Interestingly, Friction Tolerance and Persistence contributed the least to the model’s predictive performance (roughly 10\% each).
+
+These findings suggest that continued usage is primarily driven by efficient interaction patterns rather than raw effort. Users are significantly more likely to return when their interactions yield a high perceived output relative to their engagement cost. While engagement remains a critical baseline, meaning sustained interaction is necessary, it is not sufficient for retention unless accompanied by efficient and satisfying outcomes.
+
+\includegraphics[width=\textwidth]{importance.png}
+
 \section{Implications and Conclusions}
 wrap up
+
 \end{document}
