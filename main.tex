@@ -13,12 +13,13 @@
 \date{April 2026}
 
 \begin{document}
+\maketitle
 
 \section*{Acknowledgement}
 
     This work was supported by a KING CAROL I-st research fellowship granted by the National Research Authority, contract number 30382/09.02.2026.
 
-\maketitle
+
 \tableofcontents
 
 \section{Introduction}
@@ -32,7 +33,13 @@ This study investigates the role of behavioral metrics in predicting user satisf
 The results highlight efficiency as the dominant predictor of continued usage, suggesting that users prioritize outcome quality relative to effort over raw interaction volume. These findings contribute to the design of more effective and user-centered AI learning systems.
 
 \subsection{Related work}
-Prior work in AI-driven learning systems and learning analytics has shown that user engagement signals such as time-on-task, interaction frequency, and hint usage are strong predictors of academic performance and system effectiveness. However, most existing approaches rely on surface-level usage statistics and do not fully capture deeper behavioral constructs such as persistence, efficiency, and cognitive effort during interaction with AI-assisted learning tools.
+
+Research in AI-driven learning systems has shown that interaction traces such as time-on-task, activity frequency, and help-seeking behavior are strong predictors of student performance and engagement \cite{siemens2012learning,baker2014educational}. These approaches form the basis of learning analytics and educational data mining, where machine learning models are used to infer academic outcomes from behavioral data.
+
+More recent studies emphasize engagement as a multidimensional construct capturing behavioral and cognitive involvement in learning activities \cite{fredricks2004school}. However, most existing work relies on aggregated usage statistics and does not explicitly model higher-level behavioral dynamics such as persistence under effort, efficiency of learning outcomes, or dependence on AI assistance. This limits their ability to fully represent learner interaction patterns in AI-assisted environments.
+
+This study addresses this gap by introducing a compact behavioral framework that integrates engagement, persistence, efficiency, and friction tolerance into a unified predictive model of user behavior.
+
 \section{Dataset and Methodology}
 \subsection{Feature Engineering}
 To ensure comparability across variables with different scales, raw interaction features are standardized using Z-score normalization:
@@ -73,6 +80,7 @@ The final model used 100 decision trees, with a maximum depth of 10 and Gini imp
 
 Model performance was evaluated using accuracy, ROC AUC, precision, and recall to account for class imbalance and provide a more complete assessment of predictive quality.
 
+The full implementation of the preprocessing pipeline, feature construction, and model training procedure is provided in an accompanying Kaggle notebook to ensure reproducibility of all reported experiments.
 
 \section{Behavioral Model}
 
@@ -160,12 +168,10 @@ Feature importance analysis derived from the trained Random Forest model highlig
 
 These results indicate that continued usage is primarily driven by the efficiency of interaction rather than raw effort. Users are significantly more likely to return when their interactions yield high-quality outcomes relative to the time and effort invested.
 
-
-
 \section{Conclusion}
 This study proposed a structured framework for modeling behavioral interaction features in AI-assisted learning systems and evaluated their relationship with user satisfaction and continued usage.
 
-The results indicate that behavioral efficiency is the most significant predictor of system retention, outperforming both engagement- and effort-based metrics. This suggests that users prioritize achieving high-quality outcomes with minimal interaction cost rather than maximizing interaction intensity. Accordingly, efficiency emerges as a unifying behavioral signal that captures both performance effectiveness and perceived user experience.
+The results indicate that behavioral efficiency is the most significant predictor of system retention, outperforming both engagement and effort-based metrics. This suggests that users prioritize achieving high-quality outcomes with minimal interaction cost rather than maximizing interaction intensity. Accordingly, efficiency emerges as a unifying behavioral signal that captures both performance effectiveness and perceived user experience.
 
 These findings have direct implications for the design of AI-driven educational systems. In particular, systems should prioritize optimizing outcome efficiency and reducing unnecessary interaction overhead, rather than focusing solely on increasing engagement or interaction volume. Such design choices are more likely to support sustained user adoption and perceived usability.
 
