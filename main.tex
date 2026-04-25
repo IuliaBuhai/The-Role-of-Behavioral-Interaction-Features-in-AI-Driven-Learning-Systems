@@ -14,36 +14,27 @@
 
 \begin{document}
 
-\maketitle
-
-\begin{abstract}
-This study examines how behavioral interaction features influence user satisfaction and continued usage in AI-assisted learning systems. Using a synthetic dataset modeling student study sessions, a set of normalized behavioral metrics—Engagement, Persistence, Efficiency, and Friction Tolerance—was constructed to capture interaction dynamics beyond raw performance outcomes. 
-
-A Random Forest classifier was trained to predict continued usage, achieving an accuracy of 72.5\% and an ROC AUC score of 0.65. Feature importance analysis revealed that Efficiency is the dominant predictor of retention, significantly outweighing raw effort-based metrics such as Persistence and Friction Tolerance. 
-
-The findings suggest that users prioritize achieving high-quality outcomes with minimal interaction cost, rather than maximizing effort or engagement alone. These results highlight the importance of designing AI-driven learning systems that optimize for efficiency and perceived effectiveness, supporting both successful outcomes and sustained user adoption.
-\end{abstract}
-
-\section{Acknowledgements}
+\section*{Acknowledgement}
 
     This work was supported by a KING CAROL I-st research fellowship granted by the National Research Authority, contract number 30382/09.02.2026.
 
+\maketitle
+\tableofcontents
 
 \section{Introduction}
-Artificial intelligence is increasingly integrated into educational environments, fundamentally reshaping how students interact with learning resources. Modern AI-driven systems provide on-demand assistance, adaptive feedback, and personalized guidance, but their effectiveness depends not only on the availability of these tools, but on how learners engage with them. Understanding behavioral interaction patterns is therefore essential for evaluating both learning outcomes and long-term system adoption.
 
-Prior research has focused on performance metrics or user satisfaction, less attention being given to the behavioral features that appear during interaction, such as engagement intensity, persistence, and efficiency. The behavioral signals can offer deeper insight into how students balance effort, reliance on AI assistance, and perceived outcomes during study sessions.
+Artificial intelligence is increasingly integrated into educational environments, fundamentally reshaping how students interact with learning resources. Modern AI-driven systems provide on-demand assistance, adaptive feedback, and personalized guidance, but their effectiveness depends not only on the availability of these tools, but on how learners engage with them. Understanding behavioral interaction patterns is therefore essential for evaluating both learning outcomes and long-term system adoption \cite{siemens2012learning}.
 
-~This study investigates the role of behavioral metrics in predicting user satisfaction and continued usage of AI-assisted learning systems. Using a structured dataset of simulated study sessions,  normalized indicators are constructed in such a way that they capture engagement, persistence, efficiency, and friction tolerance, which are later analyzed so their impact on retention and satisfaction can be approximated.
+Prior research has focused on performance metrics or user satisfaction, with less attention given to the behavioral features that emerge during interaction, such as engagement intensity, persistence, and efficiency. The behavioral signals can offer deeper insight into how students balance effort, reliance on AI assistance, and perceived outcomes during study sessions\cite{fredricks2004school}.
+
+This study investigates the role of behavioral metrics in predicting user satisfaction and continued usage of AI-assisted learning systems. Using a structured dataset of simulated study sessions,  normalized indicators are constructed in such a way that they capture engagement, persistence, efficiency, and friction tolerance, which are later analyzed so their impact on retention and satisfaction can be approximated.
 
 The results highlight efficiency as the dominant predictor of continued usage, suggesting that users prioritize outcome quality relative to effort over raw interaction volume. These findings contribute to the design of more effective and user-centered AI learning systems.
 
-
-
-
-\section{Dataset and Research Design}
-\subsection{Preprocessing and Definitions}
-
+\subsection{Related work}
+Prior work in AI-driven learning systems and learning analytics has shown that user engagement signals such as time-on-task, interaction frequency, and hint usage are strong predictors of academic performance and system effectiveness. However, most existing approaches rely on surface-level usage statistics and do not fully capture deeper behavioral constructs such as persistence, efficiency, and cognitive effort during interaction with AI-assisted learning tools.
+\section{Dataset and Methodology}
+\subsection{Feature Engineering}
 To ensure comparability across variables with different scales, raw interaction features are standardized using Z-score normalization:
 
 \[
@@ -66,17 +57,30 @@ For stability in division operations, a small constant \( \epsilon = 0.01 \) is 
 \text{Engagement}_{\text{shifted}} = \text{Engagement} + |\min(\text{Engagement})| + \epsilon
 \]
 
-These transformations ensure numerical stability and prevent scale-related distortions in the derived behavioral metrics.
+These transformations ensure numerical stability and prevent scale-related distortions in the computed behavioral metrics.
 
-The dataset represents a synthetic dataset that models student interaction with AI-assisted learning systems. The dataset contains 11 fields with data about collected during AI-assisted study sessions.The dataset used in this study was obtained from Kaggle \cite{ai_learning_dataset}. Before any analysis was done, the data was cleaned(unnecessary fields were removed, non-numerical fields were replaced with numerical representations) and extra features were computed based on the given features (Engagement, Persistence, Efficiency and Friction tolerance), each feature constructed to positively or negatively weight behavioral signals.
+\subsection{Data}
 
-\section{Building Behavioral Metrics}
+The data represents a synthetic dataset that models student interaction with AI-assisted learning systems. The dataset contains 11 fields with data collected during AI-assisted study sessions. The dataset used in this study was obtained from Kaggle \cite{ai_learning_dataset}. Before any analysis was done, the data was cleaned(unnecessary fields were removed, non-numerical fields were replaced with numerical representations), behavioral features were computed(Engagement, Persistence, Efficiency, and Friction tolerance), and each feature was constructed to positively or negatively weight behavioral signals \cite{baker2014educational}.
 
-~The behavioral dimensions considered in this study are conceptually grounded in prior work on the ThinkR platform, where interaction-based features were shown to reflect cognitive and motivational aspects of learning behavior \cite{penrose_article}.
+\subsection{Experimental Setup}
+
+To evaluate the predictive power of behavioral features, a Random Forest classifier \cite{breiman2001random} was trained to predict continued usage of the system, defined as a binary variable indicating whether a user returns for further sessions.
+
+The dataset was split into training and testing sets using an 80/20 stratified split to preserve class distribution. Model performance was optimized using randomized hyperparameter search with cross-validation.
+
+The final model used 100 decision trees, with a maximum depth of 10 and Gini impurity as the splitting criterion. A fixed random seed was used to ensure reproducibility of results.
+
+Model performance was evaluated using accuracy, ROC AUC, precision, and recall to account for class imbalance and provide a more complete assessment of predictive quality.
+
+
+\section{Behavioral Model}
+
+The behavioral dimensions considered in this study are conceptually grounded in prior work on the ThinkR platform, where interaction-based features were shown to reflect cognitive and motivational aspects of learning behavior \cite{penrose_article}.
 
 \subsection{Engagement (Interaction Intensity)}
 
-Engagement captures the total volume of interaction, balancing both time spent and prompt frequency, . The engagement feature is rewarding each prompt and each minute spent studying. The formula of engagement is the following:
+Engagement captures the total volume of interaction, balancing both time spent and prompt frequency. The engagement feature is rewarding each prompt and each minute spent studying. The formula of engagement is the following:
 
     \[
     \text{Engagement} = Z(\text{TotalPrompts}) + Z(\text{SessionLengthMin})
@@ -84,7 +88,7 @@ Engagement captures the total volume of interaction, balancing both time spent a
 
 \subsection{Persistence (Cognitive Effort)}
 
-Persistence measures sustained effort, it gently penalizes over-reliance on AI assistance (which requires less independent cognitive effort). The persistence feature rewards the effort, the work, but also makes sure the student put in cognitive effort.The coefficient (0.3) was empirically chosen to moderate the influence of AI assistance, ensuring that assistance moderates but does not dominate the persistence signal. This reflects the assumption that moderate AI use supports learning, while excessive reliance reduces independent cognitive effort.The formula of persistence is the following:
+Persistence measures sustained effort, it gently penalizes over-reliance on AI assistance (which requires less independent cognitive effort)and rewards the cognitive effort. The coefficient (0.3) was empirically chosen to moderate the influence of AI assistance, ensuring that assistance moderates but does not dominate the persistence signal. This reflects the assumption that moderate AI use supports learning, while excessive reliance reduces independent cognitive effort.The formula of persistence is the following:
 
     \[
     \text{Persistence} = Z(\text{TotalPrompts}) - (0.3 \times Z(\text{AI\_AssistanceLevel}))
@@ -92,7 +96,7 @@ Persistence measures sustained effort, it gently penalizes over-reliance on AI a
 
 \subsection{Efficiency (Outcome Relative to Effort)}
 
-Efficiency computes the successful output realative to engagement, it is modeled as outcome quality relative to interaction cost. Both features that contribute to efficiency (the final outcome and the satisfaction rating) are optimised and normalised so they ensure objective performance and subjective perception.The formula of efficiency is the following:
+Efficiency computes the successful output realative to engagement, it is modeled as outcome quality relative to interaction cost. The formula of efficiency is the following:
 
     \[
     \text{Efficiency} = \frac{MinMax(\text{FinalOutcome}) \times MinMax(\text{SatisfactionRating})}{\text{Engagement}_{\text{shifted}} + \epsilon}
@@ -106,18 +110,18 @@ The Friction Tolerance metric captures cognitive effort, by penalizing reliance 
      \text{FrictionTolerance} = \text{TotalPrompts} - \text{AI\_AssistanceLevel}
     \]
 
-    
-
 Together, these metrics form a structured behavioral representation of user interaction, balancing effort, outcome, and assistance. This feature space enables the subsequent analysis of their relative importance in predicting satisfaction and continued usage.
+
+
+
+\section{Results and Discussion}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{importance.png}
-\caption{Feature importance scores derived from the predictive model.}
-\label{fig:importance}
+\includegraphics[width=0.8\textwidth]{corr.png}
+\caption{Behavioral feature relationships across outcome, satisfaction, and retention dimensions. Rows represent behavioral metrics (Engagement, Efficiency, Persistence), and columns correspond to Final Outcome, Satisfaction Rating, and Continued Usage. Efficiency emerges as the dominant predictor of retention, while Engagement shows consistent positive trends and Persistence reflects a trade-off between success and user experience.}
+\label{fig:correlation}
 \end{figure}
-
-\section{Results and Discussion}
 
 Following the extraction and normalization of behavioral features, their relationships with learning outcomes, user satisfaction, and continued usage were analyzed. Both exploratory analysis and predictive modeling were employed to identify the most influential behavioral signals.
 
@@ -132,11 +136,17 @@ Persistence demonstrates a clear positive association with successful task compl
 \textbf{Efficiency.}
 Efficiency presents the most distinctive behavioral pattern. While lower and intermediate outcome categories show relatively low and stable efficiency values, a sharp increase is observed for sessions resulting in successful task completion. Similarly, higher satisfaction levels strongly correlate with increased efficiency. This indicates that users derive the greatest satisfaction when achieving high-quality outcomes with minimal interaction cost. Efficiency therefore captures the balance between effort and outcome, making it a critical indicator of effective system use.
 
+
 \subsection{Predictive Modeling of Continued Usage}
 
-To quantify the impact of behavioral features on user retention, a Random Forest classifier was trained to predict continued usage (binary variable \textit{UsedAgain}). The dataset was split into training and testing subsets using an 80/20 ratio, with stratification to preserve class distribution. Hyperparameter optimization was performed using randomized search with cross-validation.
-
 The optimized model achieved an accuracy of 72.5\% and an ROC AUC score of 0.65, indicating moderate predictive capability. While overall performance is satisfactory, class-level analysis reveals an imbalance in predictive sensitivity. The model achieved a recall of 0.25 for non-returning users, indicating limited detection of disengagement cases. However, precision for this class reached 0.57, suggesting that flagged at-risk users are identified with relatively high reliability.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{importance.png}
+\caption{Feature importance scores derived from the trained Random Forest model. The plot shows the relative contribution of behavioral metrics—Engagement, Persistence, Efficiency, Friction Tolerance, and Satisfaction Rating—in predicting continued usage of the AI-assisted learning system.}
+\label{fig:importance}
+\end{figure}
 
 \subsection{Feature Importance Analysis}
 
@@ -150,15 +160,20 @@ Feature importance analysis derived from the trained Random Forest model highlig
 
 These results indicate that continued usage is primarily driven by the efficiency of interaction rather than raw effort. Users are significantly more likely to return when their interactions yield high-quality outcomes relative to the time and effort invested.
 
-\subsection{Interpretation}
-
-The findings suggest that behavioral efficiency acts as a unifying signal that captures both performance and user experience. While engagement and persistence remain necessary components of successful interaction, they do not independently guarantee continued usage. Instead, users prioritize systems that enable them to achieve their objectives with minimal friction.
-
-This emphasizes the importance of designing AI-assisted learning systems that optimize not only for engagement, but for outcome efficiency and perceived effectiveness. Systems that reduce unnecessary interaction overhead while maintaining high-quality outputs are more likely to sustain long-term user adoption.
 
 
+\section{Conclusion}
+This study proposed a structured framework for modeling behavioral interaction features in AI-assisted learning systems and evaluated their relationship with user satisfaction and continued usage.
 
-\bibliographystyle{plain}
+The results indicate that behavioral efficiency is the most significant predictor of system retention, outperforming both engagement- and effort-based metrics. This suggests that users prioritize achieving high-quality outcomes with minimal interaction cost rather than maximizing interaction intensity. Accordingly, efficiency emerges as a unifying behavioral signal that captures both performance effectiveness and perceived user experience.
+
+These findings have direct implications for the design of AI-driven educational systems. In particular, systems should prioritize optimizing outcome efficiency and reducing unnecessary interaction overhead, rather than focusing solely on increasing engagement or interaction volume. Such design choices are more likely to support sustained user adoption and perceived usability.
+
+The study is subject to limitations. First, the dataset is synthetic, which may not fully reflect the complexity and noise of real-world educational interactions. Second, the behavioral features are derived from predefined transformations and weighting schemes, which introduce modeling assumptions that may not capture all aspects of human learning behavior. Third, the predictive evaluation is conducted on a single dataset without external validation, limiting generalizability.
+
+Despite these limitations, the proposed framework provides a structured approach for analyzing behavioral interaction signals in AI-assisted learning environments. Future work should validate these findings on real-world datasets and extend the analysis to temporal behavioral dynamics across extended learning trajectories.
+
+\bibliographystyle{IEEEtran}
 \bibliography{references}
 
 \end{document}
